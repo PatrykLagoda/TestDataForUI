@@ -1,11 +1,13 @@
-import BasePage from './BasePage';
-import {DEFAULT_TIMEOUT} from '../configs/e2eConstants';
+import { Wait } from '../../../src/common/index.js';
+import { WebButton, WebTextfield, WebElementArray, WebLabel } from '../../../src/web/index.js';
+import { DEFAULT_TIMEOUT } from '../configs/e2eConstants';
+import BaseWikipediaPage from './baseWikipediaPage.js';
 
-const SCREEN_SELECTOR = '#checkout_info_container';
+const SCREEN_SELECTOR = '#searchInput';
 
-class CheckoutPersonalInfoPage extends BasePage {
+class MainPage extends BaseWikipediaPage {
     constructor() {
-        super(SCREEN_SELECTOR);
+        super(null, 'main', '/Main_Page'); // Adjust if 'browser' is required
     }
 
     // Make it private so people can't mess with it
@@ -14,65 +16,56 @@ class CheckoutPersonalInfoPage extends BasePage {
         return $(SCREEN_SELECTOR);
     }
 
-    get #cancelButton() {
-        return $('.cart_cancel_link');
+    get #searchBarIconButton() {
+        return new WebButton('.mw-ui-icon-search', 'search button', this);
     }
 
-    get #continueCheckoutButton() {
-        return $('.cart_button');
+    get #searchBar() {
+        return new WebTextfield('#searchInput', 'search bar', this);
     }
 
-    get #firstName() {
-        return $('[data-test="firstName"]');
+    get #searchButton() {
+        return new WebButton('.cdx-search-input__end-button', 'search', this);
     }
 
-    get #lastName() {
-        return $('[data-test="lastName"]');
-    }
-
-    get #postalCode() {
-        return $('[data-test="postalCode"]');
-    }
-
-    get #errorMessage() {
-        return $('[data-test="error"]');
+    get #topSearchResults() {
+        return new WebElementArray<WebLabel>('.cdx-search-result-title', 'search result', this);
     }
 
     /**
-     * Submit personal info
+     * Enter a term in the search bar and optionally trigger the search
      *
-     * @param {object} personalInfo
-     * @param {string} personalInfo.firstName
-     * @param {string} personalInfo.lastName
-     * @param {string} personalInfo.zip
+     * @param {string} searchTerm
      */
-    submitPersonalInfo(personalInfo) {
-        const {firstName, lastName, zip} = personalInfo;
+    async enterSearchTerm(searchTerm) {
+        try {
+            await Wait.until(async () => {
+                return (await this.#searchBarIconButton.isDisplayed(true)) === true;
+            }, '', 200);
 
-        this.waitForIsShown();
-        this.#firstName.addValue(firstName);
-        this.#lastName.addValue(lastName);
-        this.#postalCode.addValue(zip);
-        this.#continueCheckoutButton.click();
+            this.#searchBarIconButton.click();
+        } catch {}
+
+        await this.#searchBar.sendText(searchTerm);
+        await Wait.for(500);
     }
 
     /**
-     * Get the text or the error message container
+     * Click the search submit button
+     */
+    async clickSearch() {
+        await this.#searchButton.click();
+    }
+
+    /**
+     * Get an array of strings for the top search result titles
      *
-     * @return {string}
+     * @returns {Promise<string[]>}
      */
-    getErrorMessage() {
-        this.#errorMessage.waitForDisplayed({timeout: DEFAULT_TIMEOUT});
-
-        return this.#errorMessage.getText();
-    }
-
-    /**
-     * Cancel checkout
-     */
-    cancelCheckout() {
-        this.#cancelButton.click();
+    async getTopResultsAsStrings() {
+        const elements = await this.#topSearchResults.getElements();
+        return Promise.all(elements.map(el => el.getText()));
     }
 }
 
-export default new CheckoutPersonalInfoPage();
+export default new MainPage();
