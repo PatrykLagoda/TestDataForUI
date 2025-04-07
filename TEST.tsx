@@ -4,9 +4,6 @@ import BaseWikipediaPage from './baseWikipediaPage.js';
 
 const PAGE_PATH = '/Main_Page';
 
-/**
- * Main Wikipedia page
- */
 class MainPage extends BaseWikipediaPage {
     constructor(browser: Browser) {
         super(browser, 'main', PAGE_PATH);
