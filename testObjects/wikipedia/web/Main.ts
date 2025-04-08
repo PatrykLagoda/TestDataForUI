@@ -22,10 +22,9 @@ export class MainPage extends BaseWikipediaPage {
             results.push(await topSearchOptionLabel.getText());
         }
         return results;
-    }``
+    }
 
-    
-
+    /// test
     async enterSearchTerm(searchTerm: string) {
         try {
             await Wait.until(async () => {
