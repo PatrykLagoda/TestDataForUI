@@ -22,7 +22,9 @@ export class MainPage extends BaseWikipediaPage {
             results.push(await topSearchOptionLabel.getText());
         }
         return results;
-    }
+    }``
+
+    
 
     async enterSearchTerm(searchTerm: string) {
         try {
