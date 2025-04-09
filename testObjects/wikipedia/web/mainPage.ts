@@ -24,7 +24,6 @@ export class MainPage extends BaseWikipediaPage {
         return results;
     }
 
-    /// test
     async enterSearchTerm(searchTerm: string) {
         try {
             await Wait.until(async () => {
