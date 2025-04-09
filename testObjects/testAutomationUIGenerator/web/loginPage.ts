@@ -9,21 +9,35 @@ import {
 import { BaseTestAutomationUIGeneratorPage } from "./baseTestAutomationUIGeneratorPage.js";
 import { MainPage } from "./mainPage.js";
 
+/**
+ * Page object model for handling login via popup using the UI Generator framework.
+ */
 export class LoginPage extends BaseTestAutomationUIGeneratorPage {
   private loginInput = new WebTextfield("#i0116", "login input", this);
-  private loginNextBtn = new WebButton(
-    "#idSIButton9",
-    "login next button",
-    this
-  );
+  private loginNextBtn = new WebButton("#idSIButton9", "login next button", this);
   private passwordInput = new WebTextfield("#i0118", "password input", this);
   private signinBtn = new WebButton("#idSIButton9", "signin button", this);
   private displayName = new WebElement("#displayName", "display email", this);
 
+  /**
+   * Constructor for the LoginPage.
+   * 
+   * @param {Browser} browser - Instance of the custom browser wrapper.
+   */
   constructor(browser: Browser) {
     super(browser, "login", "popup");
   }
 
+  /**
+   * Performs login via a popup window using the provided email and password.
+   * 
+   * Handles popup detection, switching context, entering credentials,
+   * switching back to the main window, refreshing the page, and clicking login again.
+   *
+   * @param {string} email - User email for login.
+   * @param {string} password - User password for login.
+   * @returns {Promise<void>}
+   */
   async loginThroughPopup(email: string, password: string): Promise<void> {
     const mainPage = new MainPage(this.browser);
 
@@ -51,19 +65,25 @@ export class LoginPage extends BaseTestAutomationUIGeneratorPage {
 
     await browser.switchToWindow(popupHandle);
     await browser.pause(1000);
+
     await this.enterCredentials(email, password);
+
     await browser.pause(2000);
-    await browser.switchToWindow(handlesBefore[0]);
+    await browser.switchToWindow(handlesBefore[0]); // Switch back to main window
     await browser.pause(2000);
-    await browser.refresh();
-    await mainPage.clickLogin();
+    await browser.refresh(); // Refresh to reflect login state
+    await mainPage.clickLogin(); // Re-initiate UI logic
     await browser.pause(2000);
   }
 
-    async enterCredentials(
-    email: string,
-    password: string
-  ): Promise<void> {
+  /**
+   * Handles entering credentials into the login popup and submitting the form.
+   *
+   * @param {string} email - User email address.
+   * @param {string} password - User password.
+   * @returns {Promise<void>}
+   */
+  async enterCredentials(email: string, password: string): Promise<void> {
     await Wait.for(1000);
     try {
       if (await this.loginInput.isDisplayed(true)) {
@@ -72,6 +92,7 @@ export class LoginPage extends BaseTestAutomationUIGeneratorPage {
         await this.loginNextBtn.click();
       }
     } catch {}
+
     await Wait.for(1000);
     try {
       if (await this.passwordInput.isDisplayed(true)) {
@@ -80,6 +101,7 @@ export class LoginPage extends BaseTestAutomationUIGeneratorPage {
         await this.signinBtn.click();
       }
     } catch {}
+
     try {
       if (await this.displayName.isDisplayed(true)) {
         await Wait.for(500);
@@ -89,6 +111,7 @@ export class LoginPage extends BaseTestAutomationUIGeneratorPage {
         }
       }
     } catch {}
+
     await Wait.for(500);
   }
 }
