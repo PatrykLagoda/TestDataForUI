@@ -9,9 +9,7 @@ import {
 import { BaseTestAutomationUIGeneratorPage } from "./baseTestAutomationUIGeneratorPage.js";
 import { MainPage } from "./mainPage.js";
 
-/**
- * Page object model for handling login via popup using the UI Generator framework.
- */
+
 export class LoginPage extends BaseTestAutomationUIGeneratorPage {
   private loginInput = new WebTextfield("#i0116", "login input", this);
   private loginNextBtn = new WebButton("#idSIButton9", "login next button", this);
@@ -19,11 +17,6 @@ export class LoginPage extends BaseTestAutomationUIGeneratorPage {
   private signinBtn = new WebButton("#idSIButton9", "signin button", this);
   private displayName = new WebElement("#displayName", "display email", this);
 
-  /**
-   * Constructor for the LoginPage.
-   * 
-   * @param {Browser} browser - Instance of the custom browser wrapper.
-   */
   constructor(browser: Browser) {
     super(browser, "login", "popup");
   }
