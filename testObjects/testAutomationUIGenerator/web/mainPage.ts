@@ -8,9 +8,7 @@ import {
 } from "../../../src/web/index.js";
 import { BaseTestAutomationUIGeneratorPage } from "./baseTestAutomationUIGeneratorPage.js";
 
-/**
- * Page object model for the main landing page of the app.
- */
+
 export class MainPage extends BaseTestAutomationUIGeneratorPage {
   private loginBtn = new WebButton("/html/body/div/div/div/div[2]/div/div[1]/button", "login", this);
   private getStartedBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[1]", "get started", this);
