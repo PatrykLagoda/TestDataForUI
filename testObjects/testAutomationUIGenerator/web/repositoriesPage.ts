@@ -4,6 +4,7 @@ import {
   WebButton,
   WebElement,
   WebElementArray,
+  WebTextfield,
 } from "../../../src/web/index.js";
 import { BaseTestAutomationUIGeneratorPage } from "./baseTestAutomationUIGeneratorPage.js";
 import { RepositoryModal } from "./repositoryModal.js"; // 👈 Import added
@@ -52,7 +53,7 @@ export class RepositoriesPage extends BaseTestAutomationUIGeneratorPage {
     this
   );
   private editRepoNameBtn = new WebButton(
-    "button:text('Edit')",
+    "/html/body/div/div[2]/div[2]/div[1]/div[2]/div/div[2]/h2/button",
     "edit repository name button",
     this
   );
@@ -64,8 +65,18 @@ export class RepositoriesPage extends BaseTestAutomationUIGeneratorPage {
 
   // Modals
   private repoModal = new WebElement(`//*[@id="radix-:r0:"]`, "repository modal", this);
-  private editNameModal = new WebElement(".modal#edit-name", "edit name modal", this);
+  private editNameModal = new WebElement("/html/body/div/div[3]/div", "edit name modal", this);
   private deleteConfirmModal = new WebElement(".modal#delete-confirm", "delete confirm modal", this);
+
+
+  // Name Edit Modal Elements
+  
+  private editNameInput = new WebTextfield("/html/body/div/div[3]/div/form/div[1]/input", "change name field", this);
+
+  private cancelNameChangeBtn = new WebButton("/html/body/div/div[3]/div/form/div[2]/button[1]","change name cancel", this);
+
+  private saveNameChangeBtn = new WebButton("/html/body/div/div[3]/div/form/div[2]/button[2]","change name save",this);
+
 
   constructor(browser: Browser) {
     super(browser, "repository", "/repositories");
@@ -92,6 +103,10 @@ export class RepositoriesPage extends BaseTestAutomationUIGeneratorPage {
   async openEditNameModal(): Promise<void> {
     await this.editRepoNameBtn.click();
     await Wait.for(500);
+    await this.isModalOpen("edit")
+    await this.editNameInput.sendText("Login Flow 1");
+    await this.saveNameChangeBtn.click();
+    await Wait.for(5000);
   }
 
   async openDeleteRepositoryModal(): Promise<void> {
@@ -99,14 +114,25 @@ export class RepositoriesPage extends BaseTestAutomationUIGeneratorPage {
     await Wait.for(500);
   }
 
-  async selectRepositoryByIndex(index: number): Promise<void> {
-    const items = await this.repoItems.getElements();
-    if (index < items.length) {
-      await items[index].click();
-    } else {
-      throw new Error("Repository index out of range.");
+  async selectRepositoryByName(searchText: string): Promise<void> {
+    const parentElement = new WebElement(`/html/body/div/div[2]/div[1]/div/div[3]/table/tbody`, "table", this);
+const childrenArray = await parentElement.findElements("*", "element", this, WebElement);
+const children = await childrenArray.getElements(); // Convert to array
+for (const child of children) {
+  try {
+    const text = (await child.getText())?.trim();
+    const title = (await child.getAttribute("title"))?.trim();
+    if (text === searchText || title === searchText) {
+      await child.click();
+      return;
     }
+  } catch (err) {
   }
+}
+}
+  
+  
+  
 
   async expectRepositoryDetailVisible(): Promise<void> {
     const isVisible = await this.repoDetailPanel.isDisplayed();

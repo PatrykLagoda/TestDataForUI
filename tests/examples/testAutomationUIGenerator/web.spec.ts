@@ -14,3 +14,4 @@ describe("C1 - TestAutomationUIGenerator test - Website", () => {
         await pages.Main.expectTrueCheckIfLoggedIn();
     });
 });
+  

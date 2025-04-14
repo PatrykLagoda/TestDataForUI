@@ -12,7 +12,7 @@ import { BaseTestAutomationUIGeneratorPage } from "./baseTestAutomationUIGenerat
 export class MainPage extends BaseTestAutomationUIGeneratorPage {
   private loginBtn = new WebButton("/html/body/div/div/div/div[2]/div/div[1]/button", "login", this);
   private getStartedBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[1]", "get started", this);
-  private howItWorksBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[2]", "get started", this);
+  private howItWorksBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[2]", "how it works", this);
 
   /**
    * Constructor for MainPage.
@@ -40,13 +40,13 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
    * @returns {Promise<void>}
    */
   async expectTrueCheckIfLoggedIn(): Promise<void> {
-    await browser.refresh(); // Ensure the page is refreshed
-    await Wait.for(2000); // Wait for a moment to let the page reload
+    await Wait.for(1000); // Wait for a moment to let the page reload
     let result;
     if (
       await this.getStartedBtn.isDisplayed() &&
       await this.howItWorksBtn.isDisplayed()
     ) {
+      console.log("The results are visible")
       result = true;
     } else {
       result = false;
@@ -63,7 +63,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
    */
   async expectFalseCheckIfLoggedIn(): Promise<void> {
     await browser.refresh(); // Ensure the page is refreshed
-    await Wait.for(2000); // Wait for a moment to let the page reload
+    await Wait.for(1000); // Wait for a moment to let the page reload
     let result;
     if (
       await this.getStartedBtn.isDisplayed() &&
@@ -91,6 +91,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
    * @returns {Promise<void>}
    */
   async clickGetStartedBtn(): Promise<void> {
+    await Wait.for(1000);
     await this.getStartedBtn.click();
   }
 }

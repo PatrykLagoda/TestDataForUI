@@ -2,6 +2,7 @@ import { Wait } from "../../../src/common/index.js";
 import {
   Browser,
   WebButton,
+  WebCheckBox,
   WebElement,
   WebElementArray,
   WebTextfield,
@@ -63,17 +64,17 @@ export class RepositoryModal extends BaseTestAutomationUIGeneratorPage {
   
     // ─── Step 3: File Selection & Naming ──────────────────────────────
     repoDisplayNameInput = new WebTextfield(
-      'input[aria-label="Repository display name"]',
+      '//*[@id="radix-:r0:"]/div[2]/div/div[1]/input',
       "repository display name input",
       this
     );
     fileCheckboxes = new WebElementArray(
-      "input[type='checkbox']",
+      "#radix-\:r0\: > div.py-2 > div > div.grid.grid-cols-3.gap-4.h-\[320px\] > div.col-span-2 > div.border.border-gray-300.rounded-md.h-\[290px\].overflow-auto.p-2 > ul > li:nth-child(1) > div > ul > li:nth-child(6) > div > ul > li:nth-child(1) > div > ul",
       "repository file checkboxes",
       this
     );
     saveBtn = new WebButton(
-      'button[aria-label="Save repository configuration"]',
+      '//*[@id="radix-:r3:"]/div[2]/button[2]',
       "save configuration button",
       this
     );
@@ -117,20 +118,32 @@ export class RepositoryModal extends BaseTestAutomationUIGeneratorPage {
       await this.repoStepNextBtn.click();
       await Wait.for(1000);
     }
-  
-    async configureFilesAndSave(displayName: string, fileIndexes: number[] = [0]): Promise<void> {
+
+    
+    async setNameAndClickSequence(displayName: string, selectorsInOrder: { selector: string, name: string }[]): Promise<void> {
+      // Set the name
       await this.repoDisplayNameInput.sendText(displayName);
-      const checkboxes = await this.fileCheckboxes.getElements();
-  
-      for (const i of fileIndexes) {
-        if (checkboxes[i]) {
-          await checkboxes[i].click();
+    
+      // Click each selector in order
+      for (const { selector, name } of selectorsInOrder) {
+        const el = await this.browser.findElement(selector, name, this, WebButton);
+        if (!el) {
+          console.warn(`Element not found for: ${name}`);
+          continue;
         }
+    
+        await el.click();
+        await Wait.for(300); // slight delay between actions
       }
-  
+      await Wait.for(1000); // allow save to process
+      await this.repoStepNextBtn.click();
+      await Wait.for(300);
       await this.saveBtn.click();
-      await Wait.for(500);
+      await Wait.for(5000); // allow save to process
     }
+    
+    
+    
   
     async confirmSave(): Promise<void> {
       await this.confirmDialog.waitForDisplayed();
