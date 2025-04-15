@@ -14,11 +14,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   private getStartedBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[1]", "get started", this);
   private howItWorksBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[2]", "how it works", this);
 
-  /**
-   * Constructor for MainPage.
-   * 
-   * @param {Browser} browser - Instance of the custom browser wrapper.
-   */
+
   constructor(browser: Browser) {
     super(browser, "main", "/");
   }
@@ -26,7 +22,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   /**
    * Clicks on the login button.
    * 
-   * @returns {Promise<void>}
+   * returns {Promise<void>}
    */
   async clickLogin(): Promise<void> {
     await this.loginBtn.click();
@@ -79,7 +75,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   /**
    * Clicks the "How It Works" button.
    * 
-   * @returns {Promise<void>}
+   * returns {Promise<void>}
    */
   async clickHowItWorksBtn(): Promise<void> {
     await this.howItWorksBtn.click();
@@ -88,7 +84,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   /**
    * Clicks the "Get Started" button.
    * 
-   * @returns {Promise<void>}
+   * returns {Promise<void>}
    */
   async clickGetStartedBtn(): Promise<void> {
     await Wait.for(1000);
