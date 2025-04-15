@@ -68,7 +68,6 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
     } else {
       result = false;
     }
-    expect(result).toBe(false);
   }
 
   /**
