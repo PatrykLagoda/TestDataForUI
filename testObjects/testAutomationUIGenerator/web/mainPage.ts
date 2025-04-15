@@ -13,7 +13,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   private loginBtn = new WebButton("/html/body/div/div/div/div[2]/div/div[1]/button", "login", this);
   private getStartedBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[1]", "get started", this);
   private howItWorksBtn = new WebButton("/html/body/div/div[1]/div/div/div[1]/div/button[2]", "how it works", this);
-
+  private resultTrue:boolean = false;
 
   constructor(browser: Browser) {
     super(browser, "main", "/");
@@ -22,7 +22,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   /**
    * Clicks on the login button.
    * 
-   * returns {Promise<void>}
+   * @returns {Promise<void>}
    */
   async clickLogin(): Promise<void> {
     await this.loginBtn.click();
@@ -33,21 +33,20 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
    * 'Get Started' and 'How It Works' buttons.
    * Uses `expect(result).toBe(true)`.
    * 
-   * returns {Promise<void>}
+   * @returns {Promise<void>}
    */
-  async expectTrueCheckIfLoggedIn(): Promise<void> {
+  async expectTrueCheckIfLoggedIn(resultTrue): Promise<void> {
     await Wait.for(1000); // Wait for a moment to let the page reload
-    let result;
     if (
       await this.getStartedBtn.isDisplayed() &&
       await this.howItWorksBtn.isDisplayed()
     ) {
       console.log("The results are visible")
-      result = true;
+      this.resultTrue = true;
     } else {
-      result = false;
+      this.resultTrue = false;
     }
-    expect(result).toBe(true);
+    expect(this.resultTrue).toBe(true);
   }
 
   /**
@@ -55,12 +54,12 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
    * 'Get Started' and 'How It Works' buttons.
    * Uses `expect(result).toBe(false)`.
    * 
-   * returns {Promise<void>}
+   * @returns {Promise<void>}
    */
   async expectFalseCheckIfLoggedIn(): Promise<void> {
     await browser.refresh(); // Ensure the page is refreshed
     await Wait.for(1000); // Wait for a moment to let the page reload
-    let result;
+    let result:boolean;
     if (
       await this.getStartedBtn.isDisplayed() &&
       await this.howItWorksBtn.isDisplayed()
@@ -75,7 +74,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   /**
    * Clicks the "How It Works" button.
    * 
-   * returns {Promise<void>}
+   * @returns {Promise<void>}
    */
   async clickHowItWorksBtn(): Promise<void> {
     await this.howItWorksBtn.click();
@@ -84,7 +83,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   /**
    * Clicks the "Get Started" button.
    * 
-   * returns {Promise<void>}
+   * @returns {Promise<void>}
    */
   async clickGetStartedBtn(): Promise<void> {
     await Wait.for(1000);
