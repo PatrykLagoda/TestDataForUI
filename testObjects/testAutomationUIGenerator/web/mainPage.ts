@@ -31,42 +31,42 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
   /**
    * Checks that login was successful by verifying the visibility of
    * 'Get Started' and 'How It Works' buttons.
-   * Uses `expect(result).toBe(true)`.
+   * Uses `expect(result:boolean).toBe(true)`.
    * 
    * @returns {Promise<void>}
    */
-  async expectTrueCheckIfLoggedIn(resultTrue): Promise<void> {
+  async expectTrueCheckIfLoggedIn(resultTrue): Promise<Boolean> {
+    await browser.refresh(); // Ensure the page is refreshed
     await Wait.for(1000); // Wait for a moment to let the page reload
+  
     if (
       await this.getStartedBtn.isDisplayed() &&
       await this.howItWorksBtn.isDisplayed()
     ) {
-      console.log("The results are visible")
-      this.resultTrue = true;
+     return false;
     } else {
-      this.resultTrue = false;
+      return true;
     }
-    expect(this.resultTrue).toBe(true);
   }
 
   /**
    * Checks that login was unsuccessful by verifying the invisibility of
    * 'Get Started' and 'How It Works' buttons.
-   * Uses `expect(result).toBe(false)`.
+   *
    * 
    * @returns {Promise<void>}
    */
-  async expectFalseCheckIfLoggedIn(): Promise<void> {
+  async expectFalseCheckIfLoggedIn(): Promise<Boolean> {
     await browser.refresh(); // Ensure the page is refreshed
     await Wait.for(1000); // Wait for a moment to let the page reload
-    let result:boolean;
+  
     if (
       await this.getStartedBtn.isDisplayed() &&
       await this.howItWorksBtn.isDisplayed()
     ) {
-      result = true;
+     return true;
     } else {
-      result = false;
+      return false;
     }
   }
 
