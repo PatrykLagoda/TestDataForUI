@@ -37,7 +37,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
    * 'Get Started' and 'How It Works' buttons.
    * Uses `expect(result).toBe(true)`.
    * 
-   * @returns {Promise<void>}
+   * returns {Promise<void>}
    */
   async expectTrueCheckIfLoggedIn(): Promise<void> {
     await Wait.for(1000); // Wait for a moment to let the page reload
@@ -59,7 +59,7 @@ export class MainPage extends BaseTestAutomationUIGeneratorPage {
    * 'Get Started' and 'How It Works' buttons.
    * Uses `expect(result).toBe(false)`.
    * 
-   * @returns {Promise<void>}
+   * returns {Promise<void>}
    */
   async expectFalseCheckIfLoggedIn(): Promise<void> {
     await browser.refresh(); // Ensure the page is refreshed
