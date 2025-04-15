@@ -13,20 +13,26 @@ export class TestFlowPage extends BaseTestAutomationUIGeneratorPage {
         super(browser, "testFlow", "/");
     }
 
-
-    async createNewTestFlow(name: string, description?: string) {
-        await Wait.for(500);
-        await this.createNewTestFlowBtn.click();
-        await Wait.for(500);
-        await this.testFlowNameInputField.click();
-        await Wait.for(500);
-        await this.testFlowNameInputField.sendText(name);
-        await Wait.for(500);
-        await this.testFlowDescriptionInputField.click();
-        await Wait.for(500);
-        await this.testFlowDescriptionInputField.sendText(description);
-        await Wait.for(500);
-        await this.testFlowSaveFlow.click();
-        await Wait.for(5000);
-    }
+/**
+   * Creates a new test flow by filling in the name and optional description,
+   * then clicking the save button.
+   * @param {string} name - The name of the new test flow.
+   * @param {string} [description] - Optional description for the test flow.
+   * @returns {Promise<void>}
+   */
+async createNewTestFlow(name: string, description?: string): Promise<void> {
+    await Wait.for(500);
+    await this.createNewTestFlowBtn.click();
+    await Wait.for(500);
+    await this.testFlowNameInputField.click();
+    await Wait.for(500);
+    await this.testFlowNameInputField.sendText(name);
+    await Wait.for(500);
+    await this.testFlowDescriptionInputField.click();
+    await Wait.for(500);
+    await this.testFlowDescriptionInputField.sendText(description);
+    await Wait.for(500);
+    await this.testFlowSaveFlow.click();
+    await Wait.for(5000);
+}
 }

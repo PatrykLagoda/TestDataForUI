@@ -83,72 +83,108 @@ export class RepositoriesPage extends BaseTestAutomationUIGeneratorPage {
     this.Modal = new RepositoryModal(browser); // 👈 Initialized here
   }
 
-  async openCreateRepositoryModal(): Promise<void> {
-    await this.createRepoBtn.click();
-    await Wait.for(500);
-  }
+ /**
+   * Opens the modal for creating a new repository.
+   * @returns {Promise<void>}
+   */
+ async openCreateRepositoryModal(): Promise<void> {
+  await this.createRepoBtn.click();
+  await Wait.for(500);
+}
 
-  async goBackToTestFlows(): Promise<void> {
-    await this.backToTestFlowsBtn.click();
-  }
+/**
+ * Navigates back to the test flows page.
+ * @returns {Promise<void>}
+ */
+async goBackToTestFlows(): Promise<void> {
+  await this.backToTestFlowsBtn.click();
+}
 
-  async goToHome(): Promise<void> {
-    await this.homeBtn.click();
-  }
+/**
+ * Navigates to the home page.
+ * @returns {Promise<void>}
+ */
+async goToHome(): Promise<void> {
+  await this.homeBtn.click();
+}
 
-  async signOut(): Promise<void> {
-    await this.signOutBtn.click();
-  }
+/**
+ * Signs the user out of the application.
+ * @returns {Promise<void>}
+ */
+async signOut(): Promise<void> {
+  await this.signOutBtn.click();
+}
 
-  async openEditNameModal(): Promise<void> {
-    await this.editRepoNameBtn.click();
-    await Wait.for(500);
-    await this.isModalOpen("edit")
-    await this.editNameInput.sendText("Login Flow 1");
-    await this.saveNameChangeBtn.click();
-    await Wait.for(5000);
-  }
+/**
+ * Opens the modal to edit a repository's name, inputs a new name, and saves it.
+ * @returns {Promise<void>}
+ */
+async openEditNameModal(): Promise<void> {
+  await this.editRepoNameBtn.click();
+  await Wait.for(500);
+  await this.isModalOpen("edit");
+  await this.editNameInput.sendText("Login Flow 1");
+  await this.saveNameChangeBtn.click();
+  await Wait.for(5000);
+}
 
-  async openDeleteRepositoryModal(): Promise<void> {
-    await this.deleteRepoBtn.click();
-    await Wait.for(500);
-  }
+/**
+ * Opens the modal to confirm repository deletion.
+ * @returns {Promise<void>}
+ */
+async openDeleteRepositoryModal(): Promise<void> {
+  await this.deleteRepoBtn.click();
+  await Wait.for(500);
+}
 
-  async selectRepositoryByName(searchText: string): Promise<void> {
-    const parentElement = new WebElement(`/html/body/div/div[2]/div[1]/div/div[3]/table/tbody`, "table", this);
-const childrenArray = await parentElement.findElements("*", "element", this, WebElement);
-const children = await childrenArray.getElements(); // Convert to array
-for (const child of children) {
-  try {
-    const text = (await child.getText())?.trim();
-    const title = (await child.getAttribute("title"))?.trim();
-    if (text === searchText || title === searchText) {
-      await child.click();
-      return;
+/**
+ * Selects a repository in the list by its visible text or title attribute.
+ * @param {string} searchText - The name or title of the repository to select.
+ * @returns {Promise<void>}
+ */
+async selectRepositoryByName(searchText: string): Promise<void> {
+  const parentElement = new WebElement(`/html/body/div/div[2]/div[1]/div/div[3]/table/tbody`, "table", this);
+  const childrenArray = await parentElement.findElements("*", "element", this, WebElement);
+  const children = await childrenArray.getElements(); // Convert to array
+  for (const child of children) {
+    try {
+      const text = (await child.getText())?.trim();
+      const title = (await child.getAttribute("title"))?.trim();
+      if (text === searchText || title === searchText) {
+        await child.click();
+        return;
+      }
+    } catch (err) {
+      // Silently ignore error and continue
     }
-  } catch (err) {
   }
 }
+
+/**
+ * Asserts that the repository detail panel is visible.
+ * @returns {Promise<void>}
+ */
+async expectRepositoryDetailVisible(): Promise<void> {
+  const isVisible = await this.repoDetailPanel.isDisplayed();
+  expect(isVisible).toBe(true);
 }
-  
-  
-  
 
-  async expectRepositoryDetailVisible(): Promise<void> {
-    const isVisible = await this.repoDetailPanel.isDisplayed();
-    expect(isVisible).toBe(true);
+/**
+ * Checks if a modal is currently open.
+ * @param {"create" | "edit" | "delete"} modal - The type of modal to check.
+ * @returns {Promise<boolean>} - True if the modal is displayed, false otherwise.
+ */
+async isModalOpen(modal: "create" | "edit" | "delete"): Promise<boolean> {
+  switch (modal) {
+    case "create":
+      return await this.repoModal.isDisplayed();
+    case "edit":
+      return await this.editNameModal.isDisplayed();
+    case "delete":
+      return await this.deleteConfirmModal.isDisplayed();
+    default:
+      return false;
   }
-
-  async isModalOpen(modal: "create" | "edit" | "delete"): Promise<boolean> {
-    switch (modal) {
-      case "create":
-        return await this.repoModal.isDisplayed();
-      case "edit":
-        return await this.editNameModal.isDisplayed();
-      case "delete":
-        return await this.deleteConfirmModal.isDisplayed();
-      default:
-        return false;
-    }
-  }
+}
 }
