@@ -1,2 +1,0 @@
-The Heroku automation is an example of a webapplication which can be tested on web and mobile which uses the exact same elements and actions.
-Both the web version of the application and the mobile look and behave the same.

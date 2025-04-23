@@ -1,0 +1,210 @@
+Section 1: Authentication Flow
+
+TC-001: Unauthenticated Access
+
+Precondition: User not logged in.
+
+Steps:
+
+Launch application.
+
+Expected Result: Redirected to Microsoft Sign In page.
+
+TC-002: Valid Microsoft Sign In
+
+Precondition: User on Sign In page.
+
+Steps:
+
+Enter valid credentials.
+
+Click Sign In.
+
+Expected Result: Redirected to Welcome Page.
+
+TC-003: Invalid Microsoft Sign In
+
+Precondition: User on Sign In page.
+
+Steps:
+
+Enter invalid credentials.
+
+Click Sign In.
+
+Expected Result: Stay on Sign In page with error message.
+
+Section 2: Main Navigation
+
+TC-004: Access Welcome Page After Auth
+
+Precondition: User logged in.
+
+Steps:
+
+Navigate to root.
+
+Expected Result: Welcome Page is displayed.
+
+TC-005: Navigate to Repository List
+
+Steps:
+
+On Welcome Page, select "Manage Repositories".
+
+Expected Result: Repository List Page is displayed.
+
+TC-006: Navigate to Test Flow Manager
+
+Steps:
+
+On Welcome Page, select "View Test Flows".
+
+Expected Result: Test Flow Manager is displayed.
+
+Section 3: Repository Management
+
+TC-007: Create New Repository Flow
+
+Steps:
+
+On Repository List Page, click "Create New".
+
+Fill modal details.
+
+Proceed to GitHub Connection.
+
+Enter valid credentials.
+
+Browse files and select methods.
+
+Click Extract Methods.
+
+Save configuration.
+
+Expected Result: New repository appears in list.
+
+TC-008: GitHub Credentials Invalid
+
+Steps:
+
+Enter invalid credentials on GitHub config.
+
+Expected Result: Error shown; stays on GitHub config.
+
+TC-009: View Existing Repository Details
+
+Steps:
+
+Select an existing repository.
+
+Expected Result: Repository detail view loads.
+
+TC-010: Edit Repository
+
+Steps:
+
+Click "Edit Repository".
+
+Change name/settings.
+
+Save.
+
+Expected Result: Changes reflected in detail view.
+
+TC-011: View Test Flows from Repository
+
+Steps:
+
+Click "View Test Flows" from repository detail.
+
+Expected Result: Navigates to Test Flow Manager.
+
+Section 4: Test Flow Management
+
+TC-012: Create New Test Flow
+
+Steps:
+
+In Test Flow Manager, click "Create New".
+
+Expected Result: Opens Test Flow Builder.
+
+TC-013: Select and Configure Method
+
+Steps:
+
+Select a method in panel.
+
+Configure in Steps Panel.
+
+Enter parameters.
+
+Expected Result: Parameters validated; ready for next step.
+
+TC-014: View Generated Code
+
+Steps:
+
+After configuration, view generated code.
+
+Expected Result: Code is correctly shown.
+
+TC-015: Save Test Flow
+
+Steps:
+
+Choose to save flow.
+
+Enter name.
+
+Expected Result: Flow saved; returned to manager.
+
+TC-016: Add More Steps Instead of Saving
+
+Steps:
+
+Choose not to save.
+
+Click to add more steps.
+
+Expected Result: Returns to method selection.
+
+TC-017: Copy Code Without Saving
+
+Steps:
+
+Decline to save and to return.
+
+Copy code.
+
+Expected Result: Code copied and process ends.
+
+Section 5: Validation and Edge Cases
+
+TC-018: No Method Selected Error
+
+Steps:
+
+Try to configure steps without selecting a method.
+
+Expected Result: Error shown; blocked from proceeding.
+
+TC-019: Invalid Parameter Input
+
+Steps:
+
+Enter invalid data in parameters field.
+
+
+Expected Result: Validation error message displayed.
+
+TC-020: Authentication Timeout
+
+Steps:
+
+Start login process.
+
+Wait for session timeout.
+
+Expected Result: User session expires and re-authentication is needed.
