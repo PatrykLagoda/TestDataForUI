@@ -69,13 +69,6 @@ export class LoginPage extends BaseTestAutomationUIGeneratorPage {
     await browser.pause(2000);
   }
 
-  /**
-   * Handles entering credentials into the login popup and submitting the form.
-   *
-   * @param {string} email - User email address.
-   * @param {string} password - User password.
-   * @returns {Promise<void>}
-   */
   async enterCredentials(email: string, password: string): Promise<void> {
     await Wait.for(1000);
     try {

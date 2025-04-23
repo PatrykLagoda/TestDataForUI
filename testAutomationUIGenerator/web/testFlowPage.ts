@@ -20,34 +20,51 @@ export class TestFlowPage extends BaseTestAutomationUIGeneratorPage {
     }
 
 /**
-   * Creates a new test flow by filling in the name and optional description,
-   * then clicking the save button.
-   * @param {string} name - The name of the new test flow.
-   * @param {string} [description] - Optional description for the test flow.
-   * @returns {Promise<void>}
-   */
+ * Creates a new test flow by filling in the name and optional description,
+ * then clicking the save button.
+ * @param {string} name - The name of the new test flow.
+ * @param {string} [description] - Optional description for the test flow.
+ * @returns {Promise<void>}
+ */
 async createNewTestFlow(name: string, description?: string): Promise<void> {
-    await Wait.for(500);
-    await this.createNewTestFlowBtn.click();
-    await Wait.for(500);
-    await this.testFlowNameInputField.click();
-    await Wait.for(500);
-    await this.testFlowNameInputField.sendText(name);
-    await Wait.for(500);
-    await this.testFlowDescriptionInputField.click();
-    await Wait.for(500);
-    await this.testFlowDescriptionInputField.sendText(description);
-    await Wait.for(500);
-    await this.upDateFlow();
+  await Wait.for(500);
+  await this.createNewTestFlowBtn.click();
+  await Wait.for(500);
+  await this.testFlowNameInputField.click();
+  await Wait.for(500);
+  await this.testFlowNameInputField.sendText(name);
+  await Wait.for(500);
+  await this.testFlowDescriptionInputField.click();
+  await Wait.for(500);
+  await this.testFlowDescriptionInputField.sendText(description);
+  await Wait.for(500);
+  await this.upDateFlow();
 }
-async goBackToTestFlows(){
-    await Wait.for(500);
-    await this.backToTestFlowsBtn.click()
+
+/**
+ * Navigates back to the Test Flows page.
+ * @returns {Promise<void>}
+ */
+async goBackToTestFlows(): Promise<void> {
+  await Wait.for(500);
+  await this.backToTestFlowsBtn.click();
 }
+
+/**
+ * Selects a file from the list by matching its visible text.
+ * @param {string} searchText - The exact name of the file to select.
+ * @returns {Promise<void>}
+ */
 async selectFileByName(searchText: string): Promise<void> {
-  const parentElement = new WebElement(`/html/body/div/div[2]/div/div/div[3]/div[1]/div/div/div[3]`, "files list", this);
+  const parentElement = new WebElement(
+    `/html/body/div/div[2]/div/div/div[3]/div[1]/div/div/div[3]`,
+    "files list",
+    this
+  );
+
   const childrenArray = await parentElement.findElements("*", "element", this, WebElement);
-  const children = await childrenArray.getElements(); // Convert to array
+  const children = await childrenArray.getElements();
+
   for (const child of children) {
     try {
       const text = (await child.getText())?.trim();
@@ -55,44 +72,66 @@ async selectFileByName(searchText: string): Promise<void> {
         await child.click();
         return;
       }
-    } catch (err) {
-      // Silently ignore error and continue
+    } catch {
+      // Silently ignore and continue
     }
   }
+}
 
- 
-}
+/**
+ * Selects a method from the list by matching its visible text.
+ * Only works if the method list is currently displayed.
+ * @param {string} searchText - The exact name of the method to select.
+ * @returns {Promise<void>}
+ */
 async selectMethodByName(searchText: string): Promise<void> {
- await Wait.for(500);
- let result= false;
- if (this.backToFilesBtn.isDisplayed()) {
-    result=true;
- }
- if (result) {
- const parentElement = new WebElement(`/html/body/div/div[2]/div/div/div[3]/div[1]/div/div/div[3]/div`, "method list", this);
-  const childrenArray = await parentElement.findElements("*", "element", this, WebElement);
-  const children = await childrenArray.getElements(); // Convert to array
-  for (const child of children) {
-    try {
-      const text = (await child.getText())?.trim();
-      if (text === searchText) {
-        await child.click();
-        if (this.testFlowStepStepsDiv.isDisplayed()){
-            return   expect(result).toBe(true);
+  await Wait.for(500);
+  const isVisible = this.backToFilesBtn.isDisplayed();
+
+  if (isVisible) {
+    const parentElement = new WebElement(
+      `/html/body/div/div[2]/div/div/div[3]/div[1]/div/div/div[3]/div`,
+      "method list",
+      this
+    );
+
+    const childrenArray = await parentElement.findElements("*", "element", this, WebElement);
+    const children = await childrenArray.getElements();
+
+    for (const child of children) {
+      try {
+        const text = (await child.getText())?.trim();
+        if (text === searchText) {
+          await child.click();
+
+          if (this.testFlowStepStepsDiv.isDisplayed()) {
+            return expect(isVisible).toBe(true);
+          }
         }
+      } catch {
+        // Silently ignore and continue
       }
-    } catch (err) {
-      // Silently ignore error and continue
     }
   }
 }
-}
+
+/**
+ * Fills in the Page Object container class name input field.
+ * @param {string} className - The name of the class to enter.
+ * @returns {Promise<void>}
+ */
 async fillInPageObjectContainerInput(className: string): Promise<void> {
   await this.containerClassNamePageContainerInputField.sendText(className);
 }
-async upDateFlow(){
+
+/**
+ * Saves the current test flow.
+ * @returns {Promise<void>}
+ */
+async upDateFlow(): Promise<void> {
   await this.testFlowSaveFlow.click();
   await Wait.for(5000);
 }
+
 
 }
