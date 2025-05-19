@@ -12,10 +12,20 @@ export class MainPage extends BaseWikipediaPage {
         super(browser, "main", "/Main_Page");
     }
 
+    /**
+     * Clicks the search button to submit the current input in the search bar.
+     *
+     * @returns {Promise<void>}
+     */
     async clickSearch() {
         await this.searchBtn.click();
     }
 
+    /**
+     * Retrieves the visible top search result labels and returns them as an array of strings.
+     *
+     * @returns {Promise<string[]>} Array of text from the top search results.
+     */
     async getTopResultsAsStrings(): Promise<string[]> {
         let results: string[] = [];
         for (const topSearchOptionLabel of (await this.topSearchOptionLabels.getElements())) {
@@ -24,13 +34,21 @@ export class MainPage extends BaseWikipediaPage {
         return results;
     }
 
+    /**
+     * Enters a search term into the search bar.
+     * If the search bar is initially hidden, clicks the icon to reveal it.
+     * Waits briefly after entering the term to allow for dynamic suggestions or UI response.
+     *
+     * @param {string} searchTerm - The text to input into the search bar.
+     * @returns {Promise<void>}
+     */
     async enterSearchTerm(searchTerm: string) {
         try {
             await Wait.until(async () => {
                 return await this.searchBarBtn.isDisplayed(true) === true
             }, "", 200);
             this.searchBarBtn.click();
-        } catch{}
+        } catch {}
         await this.searchBar.sendText(searchTerm);
         await Wait.for(500);
     }
