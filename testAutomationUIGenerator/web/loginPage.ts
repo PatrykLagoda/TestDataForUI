@@ -1,103 +1,55 @@
-import { main } from "appium";
 import { Wait } from "../../../src/common/index.js";
-import {
-  Browser,
-  WebButton,
-  WebElement,
-  WebTextfield,
-} from "../../../src/web/index.js";
-import { BaseTestAutomationUIGeneratorPage } from "./baseTestAutomationUIGeneratorPage.js";
-import { MainPage } from "./mainPage.js";
+import { Browser, WebButton, WebElementArray, WebLabel, WebTextfield } from "../../../src/web/index.js";
+import { BaseWikipediaPage } from "./baseWikipediaPage.js";
 
+export class MainPage extends BaseWikipediaPage {
+    private searchBarBtn = new WebButton(".mw-ui-icon-search", "search button", this);
+    private searchBar = new WebTextfield("#searchInput", "search bar", this);
+    private searchBtn = new WebButton(".cdx-search-input__end-button", "search", this);
+    private topSearchOptionLabels = new WebElementArray<WebLabel>(".cdx-search-result-title", "search result", this);
+    
+    constructor(browser: Browser) {
+        super(browser, "main", "/Main_Page");
+    }
 
-export class LoginPage extends BaseTestAutomationUIGeneratorPage {
-  private loginInput = new WebTextfield("#i0116", "login input", this);
-  private loginNextBtn = new WebButton("#idSIButton9", "login next button", this);
-  private passwordInput = new WebTextfield("#i0118", "password input", this);
-  private signinBtn = new WebButton("#idSIButton9", "signin button", this);
-  private displayName = new WebElement("#displayName", "display email", this);
+    /**
+     * Clicks the search button to submit the current input in the search bar.
+     *
+     * @returns {Promise<void>}
+     */
+    async clickSearch() {
+        await this.searchBtn.click();
+    }
 
-  constructor(browser: Browser) {
-    super(browser, "login", "popup");
-  }
-
-  /**
-   * Performs login via a popup window using the provided email and password.
-   * 
-   * Handles popup detection, switching context, entering credentials,
-   * switching back to the main window, refreshing the page, and clicking login again.
-   *
-   * @param {string} email - User email for login.
-   * @param {string} password - User password for login.
-   * @returns {Promise<void>}
-   */
-  async loginThroughPopup(email: string, password: string): Promise<void> {
-    const mainPage = new MainPage(this.browser);
-
-    // Get handles BEFORE clicking login
-    const handlesBefore = await browser.getWindowHandles();
-
-    await mainPage.clickLogin();
-
-    // Wait until a new window handle appears
-    let popupHandle: string | undefined;
-
-    await browser.waitUntil(
-      async () => {
-        const handlesAfter = await browser.getWindowHandles();
-        popupHandle = handlesAfter.find((h) => !handlesBefore.includes(h));
-        return Boolean(popupHandle);
-      },
-      {
-        timeout: 10000,
-        timeoutMsg: "Popup window handle not found.",
-      }
-    );
-
-    if (!popupHandle) throw new Error("Popup window handle not found.");
-
-    await browser.switchToWindow(popupHandle);
-    await browser.pause(1000);
-
-    await this.enterCredentials(email, password);
-
-    await browser.pause(2000);
-    await browser.switchToWindow(handlesBefore[0]); // Switch back to main window
-    await browser.pause(2000);
-    await browser.refresh(); // Refresh to reflect login state
-    await mainPage.clickLogin(); // Re-initiate UI logic
-    await browser.pause(2000);
-  }
-
-  async enterCredentials(email: string, password: string): Promise<void> {
-    await Wait.for(1000);
-    try {
-      if (await this.loginInput.isDisplayed(true)) {
-        await this.loginInput.sendText(email);
-        await Wait.for(500);
-        await this.loginNextBtn.click();
-      }
-    } catch {}
-
-    await Wait.for(1000);
-    try {
-      if (await this.passwordInput.isDisplayed(true)) {
-        await this.passwordInput.sendText(password);
-        await Wait.for(500);
-        await this.signinBtn.click();
-      }
-    } catch {}
-
-    try {
-      if (await this.displayName.isDisplayed(true)) {
-        await Wait.for(500);
-        const emailDisplayName = await this.displayName.getValue();
-        if (emailDisplayName == email) {
-          await this.signinBtn.click();
+    /**
+     * Retrieves the visible top search result labels and returns them as an array of strings.
+     *
+     * @returns {Promise<string[]>} Array of text from the top search results.
+     */
+    async getTopResultsAsStrings(): Promise<string[]> {
+        let results: string[] = [];
+        for (const topSearchOptionLabel of (await this.topSearchOptionLabels.getElements())) {
+            results.push(await topSearchOptionLabel.getText());
         }
-      }
-    } catch {}
+        return results;
+    }
 
-    await Wait.for(500);
-  }
+    /**
+     * Enters a search term into the search bar.
+     * If the search bar is initially hidden, clicks the icon to reveal it.
+     * Waits briefly after entering the term to allow for dynamic suggestions or UI response.
+     *
+     * @param {string} searchTerm - The text to input into the search bar.
+     * @returns {Promise<void>}
+     */
+    async enterSearchTerm(searchTerm: string) {
+        try {
+            await Wait.until(async () => {
+                return await this.searchBarBtn.isDisplayed(true) === true
+            }, "", 200);
+            this.searchBarBtn.click();
+        } catch {}
+        await this.searchBar.sendText(searchTerm);
+        await Wait.for(500);
+    }
 }
